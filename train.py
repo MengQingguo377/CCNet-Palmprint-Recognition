@@ -259,9 +259,9 @@ def fit(epoch, model, data_loader, phase='training'):
         target = target.cuda()
         if phase == 'training':
             optimizer.zero_grad()
-            output, fe1 = model(data, target)
+            output, fe1 = model(data, target) # output.shape=[1024, 600], fe1.shape=[1024, 6144]
             output2, fe2 = model(data_con, target)
-            fe = torch.cat([fe1.unsqueeze(1), fe2.unsqueeze(1)], dim=1)
+            fe = torch.cat([fe1.unsqueeze(1), fe2.unsqueeze(1)], dim=1) # fe.shape=[1024, 2, 6144]
         else:
             with torch.no_grad():
                 output, fe1 = model(data, None)

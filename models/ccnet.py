@@ -75,7 +75,7 @@ class GaborConv2d(nn.Module):
         # [channel_out, <channel_in, kernel, kernel>], broadcasting
         x_theta = x * torch.cos(theta.view(-1, 1, 1, 1)) + y * torch.sin(theta.view(-1, 1, 1, 1))
         y_theta = -x * torch.sin(theta.view(-1, 1, 1, 1)) + y * torch.cos(theta.view(-1, 1, 1, 1))  
-                
+
         gb = -torch.exp(
             -0.5 * ((gamma * x_theta) ** 2 + y_theta ** 2) / (8*sigma.view(-1, 1, 1, 1) ** 2)) \
             * torch.cos(2 * math.pi * f.view(-1, 1, 1, 1) * x_theta + psi.view(-1, 1, 1, 1))
@@ -267,15 +267,15 @@ class ccnet(torch.nn.Module):
         self.arclayer_ = ArcMarginProduct(2048, num_classes, s=30, m=0.5, easy_margin=False)
 
     def forward(self, x, y=None):
-        x1 = self.cb1(x)
-        x2 = self.cb2(x)
-        x3 = self.cb3(x)
+        x1 = self.cb1(x) # [1024, 4384]
+        x2 = self.cb2(x) # [1024, 4384]
+        x3 = self.cb3(x) # [1024, 4384]
 
-        x = torch.cat((x1, x2, x3), dim=1)
+        x = torch.cat((x1, x2, x3), dim=1) # [1024, 13152]
 
-        x1 = self.fc(x)
-        x = self.fc1(x1)
-        fe = torch.cat((x1,x),dim=1)
+        x1 = self.fc(x) # [1024, 4096]
+        x = self.fc1(x1) # [1024, 2048]
+        fe = torch.cat((x1,x),dim=1) # [1024, 6144]
         x = self.drop(x)
         x = self.arclayer_(x, y)
 

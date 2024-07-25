@@ -136,7 +136,7 @@ class MyDataset(data.Dataset):
                 # img_path2 = self.images_path[idx2]
         else:
             idx2 = index
-
+        # idx2是和index同一个id的不同图像
         img_path2 = self.images_path[idx2]
 
         data = Image.open(img_path).convert('L')     

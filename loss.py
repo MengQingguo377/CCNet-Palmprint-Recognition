@@ -50,12 +50,12 @@ class SupConLoss(nn.Module):
             labels = labels.contiguous().view(-1, 1)
             if labels.shape[0] != batch_size:
                 raise ValueError('Num of labels does not match num of features')
-            mask = torch.eq(labels, labels.T).float().to(device)
+            mask = torch.eq(labels, labels.T).float().to(device) # labels的形状为[1024, 1]，转置之后变成[1, 1024]，两者形状不一致会触发torch的广播机制 # 一个batch中可能存在多个相同的label
         else:
             mask = mask.float().to(device)
 
         contrast_count = features.shape[1]
-        contrast_feature = torch.cat(torch.unbind(features, dim=1), dim=0)
+        contrast_feature = torch.cat(torch.unbind(features, dim=1), dim=0) # [2048, 6144]
         if self.contrast_mode == 'one':
             anchor_feature = features[:, 0]
             anchor_count = 1
@@ -67,7 +67,7 @@ class SupConLoss(nn.Module):
 
         # compute logits
         anchor_dot_contrast = torch.div(
-            torch.matmul(anchor_feature, contrast_feature.T),
+            torch.matmul(anchor_feature, contrast_feature.T), # 乘积结果可以等分成4个子矩阵，每个子矩阵的对角线上的元素是一对正例的相似度，其他元素都是负例对的相似度
             self.temperature)
         # for numerical stability
         logits_max, _ = torch.max(anchor_dot_contrast, dim=1, keepdim=True)
@@ -81,8 +81,8 @@ class SupConLoss(nn.Module):
             1,
             torch.arange(batch_size * anchor_count).view(-1, 1).to(device),
             0
-        )
-        mask = mask * logits_mask
+        ) # 对角线全为0，其余全为1
+        mask = mask * logits_mask # mask对角线全部置为0
 
         # compute log_prob
         exp_logits = torch.exp(logits) * logits_mask
