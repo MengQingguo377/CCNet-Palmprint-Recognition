@@ -21,7 +21,7 @@ with open(os.path.join(root, 'train_Tongji.txt'), 'w') as ofs:
         ofs.write('%s %d\n'%(imagePath, userID))
             # ID_number = 0
 
-with open(os.path.join(root, 'test_right.txt'), 'w') as ofs:
+with open(os.path.join(root, 'test_Tongji.txt'), 'w') as ofs:
     files = os.listdir(path2)
     files.sort()
     for filename in files:

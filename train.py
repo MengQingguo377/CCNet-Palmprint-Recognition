@@ -350,15 +350,15 @@ if __name__== "__main__" :
         os.makedirs(path_rst)
 
     # path
-    train_set_file = args.train_set_file
-    test_set_file = args.test_set_file
+    train_set_file = args.train_set_file # ./data/train_Tongji.txt
+    test_set_file = args.test_set_file # ./data/test_Tongji.txt
 
     # dataset
     trainset = MyDataset(txt=train_set_file, transforms=None, train=True, imside=128, outchannels=1)
     testset = MyDataset(txt=test_set_file, transforms=None, train=False, imside=128, outchannels=1)
 
-    data_loader_train = DataLoader(dataset=trainset, batch_size=batch_size, num_workers=2, shuffle=True)
-    data_loader_test = DataLoader(dataset=testset, batch_size=128, num_workers=2, shuffle=True)
+    data_loader_train = DataLoader(dataset=trainset, batch_size=batch_size, num_workers=20, shuffle=True)
+    data_loader_test = DataLoader(dataset=testset, batch_size=128, num_workers=20, shuffle=True)
 
     print('%s' % (time.strftime("%Y-%m-%d_%H-%M-%S", time.localtime())))
 
